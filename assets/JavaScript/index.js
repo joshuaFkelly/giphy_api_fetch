@@ -18,22 +18,23 @@ const buttonGroup = document.querySelector('#buttonGroup');
 const addTopicBtn = document.querySelector('#addTopicBtn');
 const searchInput = document.querySelector('#search');
 const giphyGroup = document.querySelector('#giphyGroup');
-// Gets all topics, turn them to buttons, displays to buttongroup div
-const getTopics = () => {
-  setTimeout(() => {
-    let output = '';
-    topics.forEach((topic, id) => {
-      output += `<button id="${topic}" class="giphyButton">${topic}</button>`;
-    });
-    buttonGroup.innerHTML = output;
-    // add event listener to all buttons
-    document.querySelectorAll('.giphyButton').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        const q = e.target.id;
-        getGiphys(q);
-      });
-    });
-  }, 500);
+// Gets all topics
+const getTopics = () => topics.map((topic) => createBtn(topic));
+// create a btn for each topic in array
+const createBtn = (topic) => {
+  const btn = document.createElement('button');
+  btn.id = topic;
+  btn.className = 'giphyButton';
+  btn.textContent = topic;
+  btn.addEventListener('click', (e) => {
+    const q = e.target.id;
+    getGiphys(q);
+    while (giphyGroup.firstChild) {
+      //The list is LIVE so it will re-index each call
+      giphyGroup.removeChild(giphyGroup.firstChild);
+    }
+  });
+  buttonGroup.appendChild(btn);
 };
 
 // Loads all buttons when page loads
@@ -41,29 +42,12 @@ document.onload = getTopics();
 
 // Create new topic
 const createTopic = (topic) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      topics.push(topic);
-
-      const error = false;
-
-      if (!error) {
-        resolve();
-      } else {
-        reject('Error: Something went wrong');
-      }
-    }, 1000);
-  });
+  topics.push(topic);
+  createBtn(topic);
 };
 
-// Add new topic event listener
-addTopicBtn.addEventListener('click', () => {
-  createTopic(searchInput.value)
-    .then(getTopics)
-    .catch((err) => {
-      console.log(err);
-    });
-});
+// Event listener for button to add another topic from search bar
+addTopicBtn.addEventListener('click', () => createTopic(searchInput.value));
 
 // FETCH
 // function to getGiphs
@@ -77,27 +61,28 @@ const getGiphys = (q) => {
   fetch(
     `https://api.giphy.com/v1/gifs/${endpoint}?api_key=${key}&q=${q}&limit=${limit}&offset=${offset}&rating=${rating}&lang=${lang}`
   )
-    .then((res) => {
-      return res.json();
-    })
-    .then((data) => {
-      const giphs = data.data;
-      displayGiphys(giphs);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    .then((res) => res.json())
+    .then((data) => displayGiphys(data.data))
+    .catch((err) => console.log(err));
 };
 // function to display giphs
 const displayGiphys = (giphs) => {
-  let output = '';
-  giphs.forEach((giph) => {
-    output += `<img id=${giph.id} src=${giph.images.original_still.url} class="images">`;
-  });
-  giphyGroup.innerHTML = output;
-  document.querySelectorAll('.images').forEach((img) => {
-    img.addEventListener('click', (e) => {
-      console.log(e.target);
+  giphs.map((giph) => {
+    const looping = giph.images.original.url;
+    const still = giph.images.original_still.url;
+
+    const newImg = document.createElement('img');
+
+    newImg.id = giph.id;
+    newImg.src = still;
+    newImg.className = 'images';
+    newImg.addEventListener('click', (e) => {
+      if (e.target.src === still) {
+        e.target.setAttribute('src', looping);
+      } else {
+        e.target.setAttribute('src', still);
+      }
     });
+    giphyGroup.appendChild(newImg);
   });
 };
