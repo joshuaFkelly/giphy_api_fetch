@@ -1,3 +1,4 @@
+// Variables
 const topics = [
   'Naruto',
   'CowBoy Bebop',
@@ -14,7 +15,6 @@ const topics = [
   'Evangelion',
   'Full Metal Alchemist',
 ];
-
 const buttonGroup = document.querySelector('#buttonGroup');
 const addTopicBtn = document.querySelector('#addTopicBtn');
 const searchInput = document.querySelector('#search');
@@ -23,10 +23,13 @@ const limitInput = document.querySelector('#limit');
 const offsetInput = document.querySelector('#offset');
 const ratingInput = document.querySelector('#rating');
 const dataList = document.querySelector('#languages');
+const API_KEY = 'q8DYV0M8eXqbtdQxXfnOJHMbFjtuG0Gz';
+
 let limit = 10;
 let offset = 0;
 let q = '';
 let rating = '';
+
 // Gets all topics
 const getTopics = () => topics.map((topic) => createBtn(topic));
 
@@ -62,9 +65,8 @@ addTopicBtn.addEventListener('click', () => createTopic(searchInput.value));
 // FETCH
 const getGiphys = () => {
   const endpoint = 'search';
-  const key = 'q8DYV0M8eXqbtdQxXfnOJHMbFjtuG0Gz';
   fetch(
-    `https://api.giphy.com/v1/gifs/${endpoint}?api_key=${key}&q=${q}&limit=${limit}&offset=${offset}&rating=${rating}`
+    `https://api.giphy.com/v1/gifs/${endpoint}?api_key=${API_KEY}&q=${q}&limit=${limit}&offset=${offset}&rating=${rating}`
   )
     .then((res) => res.json())
     .then((data) => displayGiphys(data.data))
@@ -93,12 +95,8 @@ const displayGiphys = (giphs) => {
 };
 
 // change limit
-limitInput.addEventListener('change', (e) => {
-  limit = e.target.value;
-});
-offsetInput.addEventListener('change', (e) => {
-  offset = e.target.value;
-});
-ratingInput.addEventListener('change', (e) => {
-  rating = e.target.value;
-});
+limitInput.addEventListener('change', (e) => (limit = e.target.value));
+// change offset
+offsetInput.addEventListener('change', (e) => (offset = e.target.value));
+// change rating
+ratingInput.addEventListener('change', (e) => (rating = e.target.value));
