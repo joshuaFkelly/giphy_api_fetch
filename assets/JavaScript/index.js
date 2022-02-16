@@ -18,8 +18,12 @@ const buttonGroup = document.querySelector('#buttonGroup');
 const addTopicBtn = document.querySelector('#addTopicBtn');
 const searchInput = document.querySelector('#search');
 const giphyGroup = document.querySelector('#giphyGroup');
+const limitInput = document.querySelector('#limit');
+let limit = 10;
+let q = '';
 // Gets all topics
 const getTopics = () => topics.map((topic) => createBtn(topic));
+
 // create a btn for each topic in array
 const createBtn = (topic) => {
   const btn = document.createElement('button');
@@ -27,8 +31,8 @@ const createBtn = (topic) => {
   btn.className = 'giphyButton';
   btn.textContent = topic;
   btn.addEventListener('click', (e) => {
-    const q = e.target.id;
-    getGiphys(q);
+    q = e.target.id;
+    getGiphys(q, limit);
     while (giphyGroup.firstChild) {
       //The list is LIVE so it will re-index each call
       giphyGroup.removeChild(giphyGroup.firstChild);
@@ -50,11 +54,11 @@ const createTopic = (topic) => {
 addTopicBtn.addEventListener('click', () => createTopic(searchInput.value));
 
 // FETCH
-// function to getGiphs
-const getGiphys = (q) => {
+const getGiphys = () => {
   const endpoint = 'search';
   const key = 'q8DYV0M8eXqbtdQxXfnOJHMbFjtuG0Gz';
-  const limit = 10;
+  console.log(limit);
+  //   const limit = 10;
   const offset = 0;
   const rating = '';
   const lang = 'en';
@@ -86,3 +90,13 @@ const displayGiphys = (giphs) => {
     giphyGroup.appendChild(newImg);
   });
 };
+
+// const limit = limitInput.src.value;
+
+limitInput.addEventListener('change', (e) => {
+  console.log(e.target.value);
+  limit = e.target.value;
+  if (limit <= 0) {
+    limit = 10;
+  }
+});
