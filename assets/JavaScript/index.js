@@ -14,13 +14,19 @@ const topics = [
   'Evangelion',
   'Full Metal Alchemist',
 ];
+
 const buttonGroup = document.querySelector('#buttonGroup');
 const addTopicBtn = document.querySelector('#addTopicBtn');
 const searchInput = document.querySelector('#search');
 const giphyGroup = document.querySelector('#giphyGroup');
 const limitInput = document.querySelector('#limit');
+const offsetInput = document.querySelector('#offset');
+const ratingInput = document.querySelector('#rating');
+const dataList = document.querySelector('#languages');
 let limit = 10;
+let offset = 0;
 let q = '';
+let rating = '';
 // Gets all topics
 const getTopics = () => topics.map((topic) => createBtn(topic));
 
@@ -57,24 +63,19 @@ addTopicBtn.addEventListener('click', () => createTopic(searchInput.value));
 const getGiphys = () => {
   const endpoint = 'search';
   const key = 'q8DYV0M8eXqbtdQxXfnOJHMbFjtuG0Gz';
-  console.log(limit);
-  //   const limit = 10;
-  const offset = 0;
-  const rating = '';
-  const lang = 'en';
   fetch(
-    `https://api.giphy.com/v1/gifs/${endpoint}?api_key=${key}&q=${q}&limit=${limit}&offset=${offset}&rating=${rating}&lang=${lang}`
+    `https://api.giphy.com/v1/gifs/${endpoint}?api_key=${key}&q=${q}&limit=${limit}&offset=${offset}&rating=${rating}`
   )
     .then((res) => res.json())
     .then((data) => displayGiphys(data.data))
     .catch((err) => console.log(err));
 };
+
 // function to display giphs
 const displayGiphys = (giphs) => {
   giphs.map((giph) => {
     const looping = giph.images.original.url;
     const still = giph.images.original_still.url;
-
     const newImg = document.createElement('img');
 
     newImg.id = giph.id;
@@ -91,12 +92,13 @@ const displayGiphys = (giphs) => {
   });
 };
 
-// const limit = limitInput.src.value;
-
+// change limit
 limitInput.addEventListener('change', (e) => {
-  console.log(e.target.value);
   limit = e.target.value;
-  if (limit <= 0) {
-    limit = 10;
-  }
+});
+offsetInput.addEventListener('change', (e) => {
+  offset = e.target.value;
+});
+ratingInput.addEventListener('change', (e) => {
+  rating = e.target.value;
 });

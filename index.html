@@ -13,8 +13,24 @@
 <body>
     <input id="search" type="text" placeholder="Search for a Giphy">
     <button id="addTopicBtn">Add Topic</button>
+
     <label for="limit">Limit:</label>
     <input type="number" name="limit" id="limit" min="1" max="50">
+
+    <label for="offset">Offset:</label>
+    <input type="number" name="offset" id="offset" min="0" max="4999">
+
+    <label for="rating">Content Rating:</label>
+
+    <select name="rating" id="rating">
+        <option value="">-- select a rating --</option>
+        <option value="g">g</option>
+        <option value="pg">pg</option>
+        <option value="pg-13">pg-13</option>
+        <option value="r">r</option>
+
+    </select>
+
     <div id="buttonGroup"></div>
     <div id="giphyGroup"></div>
 </body>
