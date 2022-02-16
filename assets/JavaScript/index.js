@@ -26,6 +26,7 @@ const getTopics = () => {
       output += `<button id="${topic}" class="giphyButton">${topic}</button>`;
     });
     buttonGroup.innerHTML = output;
+    // add event listener to all buttons
     document.querySelectorAll('.giphyButton').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const q = e.target.id;
@@ -36,7 +37,7 @@ const getTopics = () => {
 };
 
 // Loads all buttons when page loads
-getTopics();
+document.onload = getTopics();
 
 // Create new topic
 const createTopic = (topic) => {
@@ -64,12 +65,11 @@ addTopicBtn.addEventListener('click', () => {
     });
 });
 
-// fetch API to GIPHY
-
+// FETCH
+// function to getGiphs
 const getGiphys = (q) => {
   const endpoint = 'search';
   const key = 'q8DYV0M8eXqbtdQxXfnOJHMbFjtuG0Gz';
-  //   const q = "inuyasha"
   const limit = 10;
   const offset = 0;
   const rating = '';
@@ -88,10 +88,16 @@ const getGiphys = (q) => {
       console.log(err);
     });
 };
+// function to display giphs
 const displayGiphys = (giphs) => {
   let output = '';
   giphs.forEach((giph) => {
-    output += `<img id=${giph.id} src=${giph.images.original_still.url}>`;
+    output += `<img id=${giph.id} src=${giph.images.original_still.url} class="images">`;
   });
   giphyGroup.innerHTML = output;
+  document.querySelectorAll('.images').forEach((img) => {
+    img.addEventListener('click', (e) => {
+      console.log(e.target);
+    });
+  });
 };
