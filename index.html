@@ -11,28 +11,49 @@
 </head>
 
 <body>
-    <input id="search" type="text" placeholder="Search for a Giphy">
-    <button id="addTopicBtn">Add Topic</button>
+    <header>
+        <h1>Anime Giphs</h1>
+    </header>
+    <div class="container">
+        <div id="searchParams">
+            <h2>Search</h2>
+            <div class="inputfield">
+                <label id="label" for="limit">Limit:</label>
+                <input type="number" name="limit" id="limit" min="1" max="50">
+            </div>
 
-    <label for="limit">Limit:</label>
-    <input type="number" name="limit" id="limit" min="1" max="50">
+            <div class="inputField">
+                <label for="offset">Offset:</label>
+                <input type="number" name="offset" id="offset" min="0" max="4999">
+            </div>
+            <div>
+                <label for="rating">Content Rating:</label>
 
-    <label for="offset">Offset:</label>
-    <input type="number" name="offset" id="offset" min="0" max="4999">
+                <select name="rating" id="rating">
+                    <option value="">-- rating --</option>
+                    <option value="g">g</option>
+                    <option value="pg">pg</option>
+                    <option value="pg-13">pg-13</option>
+                    <option value="r">r</option>
+                </select>
+            </div>
+        </div>
 
-    <label for="rating">Content Rating:</label>
+        <div id="animes">
+            <h2>Anime Buttons</h2>
 
-    <select name="rating" id="rating">
-        <option value="">-- select a rating --</option>
-        <option value="g">g</option>
-        <option value="pg">pg</option>
-        <option value="pg-13">pg-13</option>
-        <option value="r">r</option>
-
-    </select>
-
-    <div id="buttonGroup"></div>
-    <div id="giphyGroup"></div>
+            <div id="searchBar">
+                <input id="search" type="text" placeholder="Add an anime button!">
+                <button id="addTopicBtn">Add Anime</button>
+            </div>
+            <div id="buttonGroup"></div>
+        </div>
+        <div id="giphs">
+            <h2>Giphs</h2>
+            <div id="giphyGroup">
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
