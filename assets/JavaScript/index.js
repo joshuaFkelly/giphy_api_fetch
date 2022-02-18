@@ -100,3 +100,5 @@ limitInput.addEventListener('change', (e) => (limit = e.target.value));
 offsetInput.addEventListener('change', (e) => (offset = e.target.value));
 // change rating
 ratingInput.addEventListener('change', (e) => (rating = e.target.value));
+
+// ---------------- ASYNC AWAIT ----------------
