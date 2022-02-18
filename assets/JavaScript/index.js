@@ -22,15 +22,9 @@ const giphyGroup = document.querySelector('#giphyGroup');
 const limitInput = document.querySelector('#limit');
 const offsetInput = document.querySelector('#offset');
 const ratingInput = document.querySelector('#rating');
-const dataList = document.querySelector('#languages');
-const API_KEY = 'q8DYV0M8eXqbtdQxXfnOJHMbFjtuG0Gz';
+let query;
 
-let limit = 10;
-let offset = 0;
-let q = '';
-let rating = '';
-
-// Gets all topics
+// maps topics to page
 const getTopics = () => topics.map((topic) => createBtn(topic));
 
 // create a btn for each topic in array
@@ -40,8 +34,8 @@ const createBtn = (topic) => {
   btn.className = 'giphyButton';
   btn.textContent = topic;
   btn.addEventListener('click', (e) => {
-    q = e.target.id;
-    getGiphys(q, limit);
+    query = e.target.id;
+    processGetRequest();
     while (giphyGroup.firstChild) {
       //The list is LIVE so it will re-index each call
       giphyGroup.removeChild(giphyGroup.firstChild);
@@ -50,27 +44,41 @@ const createBtn = (topic) => {
   buttonGroup.appendChild(btn);
 };
 
-// Loads all buttons when page loads
+// automatically load topics when document loads
 document.onload = getTopics();
 
-// Create new topic
-const createTopic = (topic) => {
-  topics.push(topic);
-  createBtn(topic);
+// This function changes the URL baesd on client input
+const searchParams = () => {
+  const requestObj = {
+    API_KEY: 'q8DYV0M8eXqbtdQxXfnOJHMbFjtuG0Gz',
+    endpoint: 'search',
+    limit: limitInput.value,
+    offset: offsetInput.value,
+    q: query,
+    rating: ratingInput.value,
+  };
+  return requestObj;
 };
 
-// Event listener for button to add another topic from search bar
-addTopicBtn.addEventListener('click', () => createTopic(searchInput.value));
+// This function takes data from searchParams() and modifys the URL
+const buildURL = (requestData) => {
+  return `https://api.giphy.com/v1/gifs/${requestData.endpoint}?api_key=${requestData.API_KEY}&q=${requestData.q}&limit=${requestData.limit}&offset=${requestData.offset}&rating=${requestData.rating}`;
+};
 
-// FETCH
-const getGiphys = () => {
-  const endpoint = 'search';
-  fetch(
-    `https://api.giphy.com/v1/gifs/${endpoint}?api_key=${API_KEY}&q=${q}&limit=${limit}&offset=${offset}&rating=${rating}`
-  )
-    .then((res) => res.json())
-    .then((data) => displayGiphys(data.data))
-    .catch((err) => console.log(err));
+// This is our async fetch() function. URL is provided by buildURL()
+const getGiphys = async (URL) => {
+  const response = await fetch(URL);
+  const jsonResponse = await response.json();
+  // giphy data
+  const giphys = jsonResponse.data;
+  displayGiphys(giphys);
+};
+
+// saves searchParams() data to a variable to be passed as an arg to buildURL() we then wait for getGiphys() request pasing the fully built URL as an arg
+const processGetRequest = async () => {
+  const requestData = searchParams();
+  const requestURL = buildURL(requestData);
+  await getGiphys(requestURL);
 };
 
 // function to display giphs
@@ -79,7 +87,6 @@ const displayGiphys = (giphs) => {
     const looping = giph.images.original.url;
     const still = giph.images.original_still.url;
     const newImg = document.createElement('img');
-
     newImg.id = giph.id;
     newImg.src = still;
     newImg.className = 'images';
@@ -93,12 +100,3 @@ const displayGiphys = (giphs) => {
     giphyGroup.appendChild(newImg);
   });
 };
-
-// change limit
-limitInput.addEventListener('change', (e) => (limit = e.target.value));
-// change offset
-offsetInput.addEventListener('change', (e) => (offset = e.target.value));
-// change rating
-ratingInput.addEventListener('change', (e) => (rating = e.target.value));
-
-// ---------------- ASYNC AWAIT ----------------
